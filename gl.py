@@ -103,12 +103,17 @@ class Render(object):
                     continue
 
                 if self.active_texture:
-                    tx = tA.x * w + tB.x * v + tC.x * u
-                    ty = tA.y * w + tB.y * v + tC.y * u
+                  tx = tA.x * w + tB.x * u + tC.x *v
+                  ty = tA.y * w + tB.y * u + tC.y * v
 
-                    color = self.active_texture.get_color(tx, ty, intensity)
+                  #print(tx)
+                  #print(ty)
+
+                  color = self.active_texture.get_color(tx, ty, intensity)
+                  #print(color)
                 else:
-                    color = white
+                  
+                  color = white
                 z = A.z * w + B.z * v + C.z * u
 
                 if x < 0 or y < 0:
