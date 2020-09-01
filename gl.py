@@ -21,6 +21,7 @@ class Render(object):
         self.light = V3(0,0,1)
         self.active_texture = None
         self.active_vertex_array = []
+        self.current_model = ''
 
     def glInit(self, width, height):
         return
@@ -77,36 +78,76 @@ class Render(object):
         except:
             pass
 
-    def triangle(self):
+    def shader(self, x, y ,z):
+        if self.current_model == 'desk':
+          return color(255, 0, 255)
+        else:
+          return white
+
+    def flatTriangle(self):
         A = next(self.active_vertex_array)
         B = next(self.active_vertex_array)
         C = next(self.active_vertex_array)
-
-
-
+        
         if self.active_texture:
-            tA = next(self.active_vertex_array)
-            tB = next(self.active_vertex_array)
-            tC = next(self.active_vertex_array)
+          tA = next(self.active_vertex_array)
+          tB = next(self.active_vertex_array)
+          tC = next(self.active_vertex_array)
 
         bbox_min, bbox_max = bbox(A, B, C)
 
         normal = norm(cross(sub(B, A), sub(C, A)))
         intensity = dot(normal, self.light)
         if intensity < 0:
-            return
+          return
 
         for x in range(int(bbox_min.x), int(bbox_max.x + 1)):
             for y in range(int(bbox_min.y), int(bbox_max.y + 1)):
                 w, v, u = barycentric(A, B, C, V2(x, y))
-                if w < 0 or v < 0 or u < 0:  # 0 is actually a valid value! (it is on the edge)
+                if w < 0 or v < 0 or u < 0:  
+                    #0 es valido
+                    continue
+
+                
+                z = A.z * w + B.z * v + C.z * u
+                tcolor = self.shader(x, y, z)
+
+                if x < 0 or y < 0:
+                    continue
+
+                if x < len(self.zbuffer) and y < len(self.zbuffer[x]) and z > self.zbuffer[x][y]:
+                    self.glVertex(x, y, tcolor)
+                    self.zbuffer[x][y] = z
+
+    def triangle(self):
+        A = next(self.active_vertex_array)
+        B = next(self.active_vertex_array)
+        C = next(self.active_vertex_array)
+        
+        if self.active_texture:
+          tA = next(self.active_vertex_array)
+          tB = next(self.active_vertex_array)
+          tC = next(self.active_vertex_array)
+
+        bbox_min, bbox_max = bbox(A, B, C)
+
+        normal = norm(cross(sub(B, A), sub(C, A)))
+        intensity = dot(normal, self.light)
+        if intensity < 0:
+          return
+
+        for x in range(int(bbox_min.x), int(bbox_max.x + 1)):
+            for y in range(int(bbox_min.y), int(bbox_max.y + 1)):
+                w, v, u = barycentric(A, B, C, V2(x, y))
+                if w < 0 or v < 0 or u < 0:  
+                    #0 es valido
                     continue
 
                 if self.active_texture:
                   tx = tA.x * w + tB.x * u + tC.x *v
                   ty = tA.y * w + tB.y * u + tC.y * v
 
-                  #print(tx)
+                  #print(y)
                   #print(ty)
 
                   color = self.active_texture.get_color(tx, ty, intensity)
@@ -151,6 +192,7 @@ class Render(object):
 
         for face in model.faces:
             for facepart in face:
+                #print(facepart[0])
                 vertex = self.transform(V3(*model.vertices[facepart[0]]))
                 vertex_buffer_object.append(vertex)
 
@@ -258,3 +300,9 @@ class Render(object):
                     self.triangle()
             except StopIteration:
                 print('Done.')
+        if polygon == 'FLAT':
+            try:
+                while True:
+                    self.flatTriangle()
+            except StopIteration:
+                print('Done flat')

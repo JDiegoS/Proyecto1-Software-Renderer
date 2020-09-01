@@ -28,10 +28,14 @@ class Obj(object):
                 except:
                     prefix = ''
                 if prefix == 'v':
+                    #print(line)
                     self.vertices.append(list(map(float, value.split(' '))))
                 elif prefix == 'vt':
                     #print(value)
-                    self.tvertices.append(list(map(float, value.split(' '))))
+                    res = list(map(float, value.split(' ')))
+                    if len(res) == 2:
+                        res.append(0.00)
+                    self.tvertices.append(res)
                 elif prefix == 'f':
                     self.faces.append([list(map(try_int_minus1, face.split('/'))) for face in value.split(' ')])
 

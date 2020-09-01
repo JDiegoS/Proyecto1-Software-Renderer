@@ -1,7 +1,7 @@
 import struct
 from collections import namedtuple
 
-#Extraido de https://stackoverflow.com/questions/28253102/python-3-multiply-a-vector-by-a-matrix-without-numpy
+#Extraido de (no es la respuesta aceptada) https://stackoverflow.com/questions/28253102/python-3-multiply-a-vector-by-a-matrix-without-numpy
 def matrixMul(a, b):
     c = []
     for i in range(0,len(a)):
