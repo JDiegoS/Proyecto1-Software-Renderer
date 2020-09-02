@@ -80,7 +80,86 @@ class Render(object):
 
     def shader(self, x, y ,z):
         if self.current_model == 'desk':
-          return color(255, 0, 255)
+          if y > 330 and x < 285:
+            return color(101, 62, 3)
+            
+          else:
+            return color(68, 41, 0)
+
+        elif self.current_model == 'trophy':
+          if y < 645:
+            return black
+          elif y > 708 and y < 722:
+            return color(31, 115, 36)
+          else:
+           return color(212, 195, 42)
+
+        elif self.current_model == 'computer':
+          if y < 425 or y > 620:
+            return black
+          elif x > 285:
+            return black
+          else:
+            dx = x + 50
+            dy = y - 620
+            dst = math.sqrt(dx**2 + dy**2)
+            
+            if dst <= 200:
+              r = (200 - dst)/200
+              if r < 0:
+                r = 0
+              elif r > 1:
+                r = 1
+              return color(int(4 + 250*r), int(27 + 220*r), int(101 + 150*r))
+            else:
+              dx = x - 350
+              dy = y - 570
+              dst = math.sqrt(dx**2 + dy**2)
+              
+              if dst <= 170:
+                r = (170 - dst)/170
+                if r < 0:
+                  r = 0
+                elif r > 1:
+                  r = 1
+                return color(int(4 + 250*r), int(27 + 220*r), int(101 + 150*r))
+              else:
+                dx = x - 150
+                dy = y - 400
+                dst = math.sqrt(dx**2 + dy**2)
+                
+                if dst <= 70:
+                  r = (70 - dst)/70
+                  if r < 0:
+                    r = 0
+                  elif r > 1:
+                    r = 1
+                  return color(int(4 + 250*r), int(27 + 220*r), int(101 + 150*r))
+                else:
+                  r = abs(y - 520)/100                  
+                  if r < 0:
+                    r = 0
+                  elif r > 1:
+                    r = 1
+                  return color(int(44 + 100*r), int(115 + 20*r), 225)
+          
+        elif self.current_model == 'shelf':
+          if x < 648 and y > 567:
+            return black
+          else:
+            return white
+
+        elif self.current_model == 'books':
+          if y > 680:
+            if x < 590 and (y > 683 and y < 689):
+              return white
+            else:
+              return color(209, 39, 39)
+          else:
+            if x < 588 and (y > 673 and y < 677):
+              return white
+            else:
+              return color(25, 53, 119)
         else:
           return white
 
@@ -299,10 +378,10 @@ class Render(object):
                 while True:
                     self.triangle()
             except StopIteration:
-                print('Done.')
+                print('Done texture')
         if polygon == 'FLAT':
             try:
                 while True:
                     self.flatTriangle()
             except StopIteration:
-                print('Done flat')
+                print('Done shader')
