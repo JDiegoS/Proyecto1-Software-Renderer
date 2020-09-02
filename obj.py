@@ -17,6 +17,7 @@ class Obj(object):
             self.lines = f.read().splitlines()
         self.vertices = []
         self.tvertices = []
+        self.normals = []
         self.faces = []
         self.read()
 
@@ -33,9 +34,11 @@ class Obj(object):
                 elif prefix == 'vt':
                     #print(value)
                     res = list(map(float, value.split(' ')))
-                    if len(res) == 2:
-                        res.append(0.00)
+                    '''if len(res) == 2:
+                        res.append(0.00)'''
                     self.tvertices.append(res)
+                elif prefix == 'vn': #normales
+                    self.normals.append(list(map(float,value.split(' '))))
                 elif prefix == 'f':
                     self.faces.append([list(map(try_int_minus1, face.split('/'))) for face in value.split(' ')])
 

@@ -198,7 +198,7 @@ class Render(object):
 
             if self.active_texture:
                 for facepart in face:
-                    tvertex = V3(*model.tvertices[facepart[1]])
+                    tvertex = V2(*model.tvertices[facepart[1]])
                     vertex_buffer_object.append(tvertex)
 
         self.active_vertex_array = iter(vertex_buffer_object)
